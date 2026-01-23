@@ -1,15 +1,23 @@
-using System.Data;
-using Microsoft.Data.SqlClient;
+<?php
+namespace AuthMicroservice\Core;
+use PDO;
+use PDOException;
 
-namespace AuthMicroservice.Core
-{
-    public class Database
-    {
-        private readonly string _connectionString = "Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;";
+class Database {
+    private $host = "localhost";
+    private $db_name = "auth_db";
+    private $username = "root";
+    private $password = "";
+    public $conn;
 
-        public IDbConnection CreateConnection()
-        {
-            return new SqlConnection(_connectionString);
+    public function getConnection() {
+        $this->conn = null;
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $exception) {
+            echo "Connection error: " . $exception->getMessage();
         }
+        return $this->conn;
     }
 }
