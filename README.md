@@ -8,7 +8,17 @@
 
 A lightweight PHP authentication microservice with JWT access/refresh tokens, user registration, and profile management. Built for XAMPP/Apache deployments with a flat endpoint structure — no framework overhead.
 
-**Repository:** [github.com/MUKHTIARSHAH/Auth-Microservice-PHP](https://github.com/MUKHTIARSHAH/Auth-Microservice-PHP)
+This project demonstrates how to build a focused authentication microservice in plain PHP without Laravel or Symfony. It prioritizes secure JWT authentication, clear project organization, and reusable helper components you can drop into other services.
+
+---
+
+## Design Principles
+
+- **Separation of concerns** — endpoints, handlers, helpers, and config live in distinct layers
+- **Stateless REST API** — Bearer tokens, no server-side sessions
+- **Reusable helper classes** — JWT, DB, validation, and response logic shared across endpoints
+- **Prepared statements** — every query goes through EasyDB/PDO
+- **Consistent JSON responses** — same envelope on every route
 
 ---
 
@@ -30,25 +40,22 @@ A lightweight PHP authentication microservice with JWT access/refresh tokens, us
 Each endpoint is a standalone PHP file. Requests flow through shared helpers before hitting the database.
 
 ```
-Client (Postman / Frontend)
-        │
-        ▼
-   API Endpoint          ←  API/v1/auth/*.php, API/v1/profile/*.php
-        │
-        ▼
-   ResponseHelper         ←  HTTP method check, JSON parsing
-        │
-        ▼
-   Validation             ←  Input rules, password policy
-        │
-        ▼
-   Handler / JwtHelper    ←  Auth logic, token issue & verify
-        │
-        ▼
-   DbHandler (EasyDB)     ←  Prepared statements
-        │
-        ▼
-   JSON Response          ←  Standardized STATUS / MESSAGE / DATA
+Client
+  │
+  ▼
+Endpoint        ←  API/v1/auth/*.php, API/v1/profile/*.php
+  │
+  ▼
+Validation      ←  Input rules, password policy
+  │
+  ▼
+Handler         ←  JwtHelper, auth_handler
+  │
+  ▼
+Database        ←  DbHandler (EasyDB, prepared statements)
+  │
+  ▼
+JSON Response   ←  STATUS / MESSAGE / DATA
 ```
 
 **Auth flow:** Register → Login (access + refresh tokens) → Bearer token on protected routes → Refresh when access token expires.
@@ -65,9 +72,10 @@ What's actually in the codebase today:
 | User registration & login | ✅ Implemented |
 | Profile read & update | ✅ Implemented |
 | Token validation & refresh | ✅ Implemented |
+| UUID primary keys | ✅ Implemented |
 | Password policy validation | ✅ Implemented |
 | Prepared statements (SQL injection protection) | ✅ Implemented |
-| CORS headers | ✅ Implemented (Apache + PHP) |
+| CORS headers | ✅ Implemented (`.htaccess`) |
 | GZIP compression | ✅ Implemented (`.htaccess`) |
 | Structured JSON responses | ✅ Implemented |
 | Error logging | ✅ Implemented |
@@ -95,7 +103,7 @@ Import the schema:
 mysql -u root -p < database/schema.sql
 ```
 
-This creates the `first_api` database and the `info` user table. See [`database/schema.sql`](database/schema.sql) for the full DDL.
+This creates the `first_api` database and the `info` user table with UUID primary keys. See [`database/schema.sql`](database/schema.sql) for the full DDL.
 
 ### 3. Configuration
 
@@ -103,10 +111,16 @@ Set your database credentials and JWT secret in `config/config.php`. You can als
 
 ### 4. Run locally
 
-Place the project in your web root (e.g. `htdocs/Auth-Microservice-PHP`) and hit:
+Place the project in your web root (e.g. `htdocs/Auth-Microservice-PHP`) and send a request:
 
-```
-http://localhost/Auth-Microservice-PHP/API/v1/auth/login.php
+```http
+POST http://localhost/Auth-Microservice-PHP/API/v1/auth/login.php
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "SecurePassword123!"
+}
 ```
 
 Adjust the base URL to match your folder name.
@@ -136,7 +150,7 @@ All endpoints return the same envelope:
 {
   "STATUS": "success",
   "MESSAGE": "Login successful",
-  "DATA": { },
+  "DATA": {},
   "CODE": 200,
   "TIMESTAMP": "2024-01-01 12:00:00"
 }
@@ -148,6 +162,8 @@ Errors use `"STATUS": "error"`. Validation failures include field-level details 
 
 ## Project Structure
 
+![Project structure](docs/screenshots/project-structure.png)
+
 ```
 Auth-Microservice-PHP/
 ├── API/v1/
@@ -156,7 +172,7 @@ Auth-Microservice-PHP/
 ├── config/
 │   └── config.php         # database, JWT, security settings
 ├── database/
-│   └── schema.sql         # MySQL schema
+│   └── schema.sql         # MySQL schema (UUID primary keys)
 ├── handlers/
 │   └── auth_handler.php   # JWT authentication middleware
 ├── includes/              # JWT, DB, validation, logging helpers
@@ -187,6 +203,7 @@ Suggested manual flow: register → login → validate token → fetch profile �
 
 - Passwords are hashed with `password_hash()` / verified with `password_verify()`.
 - All DB queries use prepared statements via EasyDB.
+- Users are identified by UUIDs, not auto-increment integers.
 - Set a strong `JWT_SECRET` before any deployment.
 - The forgot-password endpoint is a development stub — do not use as-is in production.
 - Rate limiting is configured but not yet enforced in middleware.
@@ -197,4 +214,4 @@ For production: enable HTTPS, rotate JWT secrets, wire up real email for passwor
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) if present, or use freely for learning and portfolio work.
+MIT License — use freely for learning and portfolio work.
