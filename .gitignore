@@ -1,0 +1,11 @@
+/vendor/
+/logs/
+*.log
+.env
+.env.*
+!.env.example
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

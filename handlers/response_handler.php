@@ -1,0 +1,2 @@
+<?php
+// Response handler placeholder 
