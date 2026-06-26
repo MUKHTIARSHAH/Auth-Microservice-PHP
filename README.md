@@ -1,14 +1,27 @@
 # Auth Microservice PHP
 
-![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?logo=php&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-HS256-black)
-![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?logo=mysql&logoColor=white)
-![Composer](https://img.shields.io/badge/Composer-2.x-885630?logo=composer&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
+![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4)
+![MySQL](https://img.shields.io/badge/MySQL-8-blue)
+![JWT](https://img.shields.io/badge/JWT-HS256-green)
+![Composer](https://img.shields.io/badge/Composer-2-orange)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 A lightweight PHP authentication microservice with JWT access/refresh tokens, user registration, and profile management. Built for XAMPP/Apache deployments with a flat endpoint structure — no framework overhead.
 
 This project demonstrates how to build a focused authentication microservice in plain PHP without Laravel or Symfony. It prioritizes secure JWT authentication, clear project organization, and reusable helper components you can drop into other services.
+
+## Table of Contents
+
+- [Design Principles](#design-principles)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [API Overview](#api-overview)
+- [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Security Notes](#security-notes)
+- [License](#license)
 
 ---
 
@@ -158,11 +171,40 @@ All endpoints return the same envelope:
 
 Errors use `"STATUS": "error"`. Validation failures include field-level details in `DATA`.
 
+### Login response example
+
+A successful `POST /API/v1/auth/login.php` returns:
+
+```json
+{
+  "STATUS": "success",
+  "MESSAGE": "Login successful. User authenticated and token generated.",
+  "DATA": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "username": "johndoe",
+    "email_address": "john@example.com",
+    "full_name": "John Doe",
+    "roles": ["user"],
+    "app_id": "first_api",
+    "access_token": "eyJhbGciOiJIUzI1NiIs...",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIs...",
+    "token_type": "Bearer",
+    "expires_in": 3600
+  },
+  "CODE": 200,
+  "TIMESTAMP": "2024-01-01 12:00:00"
+}
+```
+
+Use `access_token` in the `Authorization: Bearer` header for protected routes.
+
 ---
 
 ## Project Structure
 
 ![Project structure](docs/screenshots/project-structure.png)
+
+*Folder layout in VS Code. Add a Postman login screenshot here when you have one — it helps reviewers see the API working.*
 
 ```
 Auth-Microservice-PHP/
