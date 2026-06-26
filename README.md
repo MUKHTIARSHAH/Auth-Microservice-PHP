@@ -4,7 +4,6 @@
 ![MySQL](https://img.shields.io/badge/MySQL-8-blue)
 ![JWT](https://img.shields.io/badge/JWT-HS256-green)
 ![Composer](https://img.shields.io/badge/Composer-2-orange)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 A lightweight PHP authentication microservice with JWT access/refresh tokens, user registration, and profile management. Built for XAMPP/Apache deployments with a flat endpoint structure — no framework overhead.
 
@@ -21,7 +20,6 @@ This project demonstrates how to build a focused authentication microservice in 
 - [Project Structure](#project-structure)
 - [Testing](#testing)
 - [Security Notes](#security-notes)
-- [License](#license)
 
 ---
 
@@ -254,6 +252,4 @@ For production: enable HTTPS, rotate JWT secrets, wire up real email for passwor
 
 ---
 
-## License
-
-MIT License — use freely for learning and portfolio work.
+© 2026 Mukhtiar Shah. All rights reserved.
