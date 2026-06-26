@@ -1,4 +1,4 @@
-# Auth Microservice PHP
+# PHP Authentication Microservice
 
 ![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4)
 ![MySQL](https://img.shields.io/badge/MySQL-8-blue)
@@ -44,7 +44,7 @@ This project demonstrates how to build a focused authentication microservice in 
 | Dependencies | Composer |
 | Server | Apache (`.htaccess` included) |
 
----
+The service intentionally avoids full-stack frameworks to demonstrate secure authentication using plain PHP, reusable helper classes, and PDO-based data access.
 
 ## Architecture
 
@@ -52,20 +52,15 @@ Each endpoint is a standalone PHP file. Requests flow through shared helpers bef
 
 ```
 Client
-  │
-  ▼
+  ↓
 Endpoint        ←  API/v1/auth/*.php, API/v1/profile/*.php
-  │
-  ▼
+  ↓
 Validation      ←  Input rules, password policy
-  │
-  ▼
+  ↓
 Handler         ←  JwtHelper, auth_handler
-  │
-  ▼
+  ↓
 Database        ←  DbHandler (EasyDB, prepared statements)
-  │
-  ▼
+  ↓
 JSON Response   ←  STATUS / MESSAGE / DATA
 ```
 
@@ -125,16 +120,18 @@ Set your database credentials and JWT secret in `config/config.php`. You can als
 Place the project in your web root (e.g. `htdocs/Auth-Microservice-PHP`) and send a request:
 
 ```http
-POST http://localhost/Auth-Microservice-PHP/API/v1/auth/login.php
+POST /API/v1/auth/login.php
 Content-Type: application/json
+```
 
+```json
 {
   "username": "johndoe",
   "password": "SecurePassword123!"
 }
 ```
 
-Adjust the base URL to match your folder name.
+Full URL example: `http://localhost/Auth-Microservice-PHP/API/v1/auth/login.php` — adjust to match your folder name.
 
 ---
 
